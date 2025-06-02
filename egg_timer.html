@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfect Egg Timer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .controls {
+            margin: 20px 0;
+            text-align: center;
+        }
+        select, button {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 10px 20px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .timer {
+            font-size: 48px;
+            text-align: center;
+            margin: 20px 0;
+            color: #333;
+        }
+        .egg-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        .egg-type {
+            margin-bottom: 15px;
+        }
+        .egg-type h3 {
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .egg-type p {
+            margin: 5px 0;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Perfect Egg Timer</h1>
+        
+        <div class="controls">
+            <select id="eggType">
+                <option value="soft">Soft Boiled</option>
+                <option value="medium">Medium Boiled</option>
+                <option value="hard">Hard Boiled</option>
+            </select>
+            <select id="eggSize">
+                <option value="small">Small</option>
+                <option value="medium" selected>Medium</option>
+                <option value="large">Large</option>
+                <option value="xlarge">Extra Large</option>
+            </select>
+            <button onclick="startTimer()">Start Timer</button>
+            <button onclick="stopTimer()">Stop</button>
+        </div>
+
+        <div class="timer" id="timer">00:00</div>
+
+        <div class="egg-info">
+            <div class="egg-type">
+                <h3>Soft Boiled (6-7 minutes)</h3>
+                <p>• Runny yolk</p>
+                <p>• Firm white</p>
+                <p>• Perfect for dipping</p>
+            </div>
+            <div class="egg-type">
+                <h3>Medium Boiled (8-9 minutes)</h3>
+                <p>• Semi-firm yolk</p>
+                <p>• Fully set white</p>
+                <p>• Great for salads</p>
+            </div>
+            <div class="egg-type">
+                <h3>Hard Boiled (10-12 minutes)</h3>
+                <p>• Firm yolk</p>
+                <p>• Fully cooked</p>
+                <p>• Ideal for deviled eggs</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let timerInterval;
+        let startTime;
+        let targetTime;
+
+        const eggTimes = {
+            small: {
+                soft: 360,    // 6 minutes
+                medium: 480,  // 8 minutes
+                hard: 600     // 10 minutes
+            },
+            medium: {
+                soft: 420,    // 7 minutes
+                medium: 540,  // 9 minutes
+                hard: 720     // 12 minutes
+            },
+            large: {
+                soft: 450,    // 7.5 minutes
+                medium: 570,  // 9.5 minutes
+                hard: 750     // 12.5 minutes
+            },
+            xlarge: {
+                soft: 480,    // 8 minutes
+                medium: 600,  // 10 minutes
+                hard: 780     // 13 minutes
+            }
+        };
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            const eggType = document.getElementById('eggType').value;
+            const eggSize = document.getElementById('eggSize').value;
+            
+            targetTime = eggTimes[eggSize][eggType];
+            startTime = Date.now();
+            
+            clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const remaining = Math.max(0, targetTime - elapsed);
+            
+            document.getElementById('timer').textContent = formatTime(remaining);
+            
+            if (remaining === 0) {
+                clearInterval(timerInterval);
+                alert('Your eggs are ready!');
+            }
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            document.getElementById('timer').textContent = '00:00';
+        }
+    </script>
+</body>
+</html> 
